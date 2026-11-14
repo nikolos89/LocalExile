@@ -86,6 +86,9 @@ public sealed class JewelPathAttributeTests
             foreach (int offset in new[] { 3, 4, 5, 6, 7, 8, 9, 10, 11 }) conn.ClusterPassives.Add((ushort)(outer.Base + offset));
             foreach (int offset in new[] { 1, 2, 3, 4 }) conn.ClusterPassives.Add((ushort)(inner.Base + offset));
             var inventory = Game.ItemsOf(conn);
+            // Exercise calculation-time metadata independently of the save format used by this server revision.
+            foreach (uint id in new uint[] { 3, 4 })
+                inventory.ChangeUnsaved(PlayerInventories.PassiveJewels, id, item => item with { RequiredLevel = 85 });
             var counts = JewelPathEffects.Counts(Program.Passives, AscendancyFamily.Normal, 1, conn.Passives, conn.ClusterPassives, jewels);
             Assert.Equal(rootDistance + 4, counts[29]);
             Assert.Equal(rootDistance + 12, counts[30]);
